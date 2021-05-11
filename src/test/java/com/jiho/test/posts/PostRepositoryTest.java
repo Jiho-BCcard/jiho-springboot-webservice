@@ -3,13 +3,13 @@ package com.jiho.test.posts;
 import com.jiho.test.domain.posts.PostRepository;
 import com.jiho.test.domain.posts.Posts;
 import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,5 +51,25 @@ public class PostRepositoryTest {
         assertThat(posts.getContent()).isEqualTo(content);
     }
 
+    @Test
+    public void BaseTimeEntity_Register(){
+        //given
+        LocalDateTime now = LocalDateTime.of(2019,6,4,0,0,0);
+        postRepository.save(Posts.builder()
+                .title("Title")
+                .content("Content")
+                .author("Park")
+                .build());
 
+        //when
+        List<Posts> postsList = postRepository.findAll();
+
+        //then
+        Posts posts = postsList.get(0);
+
+        System.out.println(">>>>>>>>> createDate = "+posts.getCreatedDate() + "modifiedDate = " + posts.getModifiedDate());
+
+        assertThat(posts.getCreatedDate()).isAfter(now);
+        assertThat(posts.getModifiedDate()).isAfter(now);
+    }
 }
